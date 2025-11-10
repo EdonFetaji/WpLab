@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Books</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/e59232f0a1.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Book SHOP</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+                    aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarsExampleDefault">
+                <ul class="navbar-nav m-auto">
+                    <li class="nav-item m-auto">
+                        <a class="nav-link active" href="/books">Books</a>
+                    </li>
+                    <li class="nav-item m-auto">
+                        <a class="nav-link active" href="/authors">Authors</a>
+                    </li>
+                </ul>
+
+                <form class="form-inline my-2 my-lg-0" action="/books" method="GET">
+                    <div class="input-group input-group-sm">
+                        <input name="search" type="text" class="form-control" placeholder="Search...">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-secondary btn-number">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="nav-item">
+                        <a class="btn btn-light btn-sm ml-3" href="/logout">
+                            <i class="fa-solid fa-right-from-bracket"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<section class="jumbotron text-center">
+    <div class="container">
+        <h1 class="jumbotron-heading" th:text="${book == null} ? 'Create Book' : 'Edit Book'">Book Form</h1>
+    </div>
+</section>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <!-- POST /books for create, POST /books/{id} for update -->
+            <form method="post"
+                  th:action="@{${book == null ? '/books/add' : '/books/edit/' + book.id}}">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text"
+                           class="form-control"
+                           id="title"
+                           name="title"
+                           th:value="${book?.title}"
+                           required
+                           placeholder="Enter book title">
+                </div>
+
+                <div class="form-group">
+                    <label for="genre">Genre</label>
+                    <input type="text"
+                           class="form-control"
+                           id="genre"
+                           name="genre"
+                           th:value="${book?.genre}"
+                           placeholder="e.g., Fantasy, Sci-Fi, Thriller">
+                </div>
+
+                <div class="form-group">
+                    <label for="averageRating">Average Rating</label>
+                    <input type="number"
+                           class="form-control"
+                           id="averageRating"
+                           name="averageRating"
+                           step="0.01" min="0" max="5"
+                           th:value="${book?.averageRating}"
+                           placeholder="0.00 – 5.00">
+                </div>
+
+                <div class="form-group">
+                    <label>Author</label>
+                    <select name="authorId" class="form-control" required>
+                        <option value="" th:if="${book?.author == null}">-- Select author --</option>
+                        <option th:each="author : ${authors}"
+                                th:text="${author.getName()}"
+                                th:value="${author.getId()}"
+                                th:selected="${book != null && book.author != null && book.author.id == author.id}">
+                        </option>
+                    </select>
+                </div>
+
+                <button id="submit" type="submit" class="btn btn-primary">Submit</button>
+                <a class="btn btn-secondary" href="/books">Back</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer class="text-black-50 mt-xl-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-lg-4 col-xl-3">
+                <h5>About</h5>
+                <hr class="bg-white mb-2 mt-0 d-inline-block mx-auto w-25">
+                <p class="mb-0">Simple form for creating and editing books using Thymeleaf.</p>
+            </div>
+            <div class="col-md-2 col-lg-2 col-xl-2 mx-auto">
+                <h5>Info</h5>
+                <hr class="bg-white mb-2 mt-0 d-inline-block mx-auto w-25">
+                <ul class="list-unstyled">
+                    <li><a href="/books">Books</a></li>
+                    <li><a href="/authors">Authors</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 col-lg-2 col-xl-2 mx-auto">
+                <h5>Links</h5>
+                <hr class="bg-white mb-2 mt-0 d-inline-block mx-auto w-25">
+                <ul class="list-unstyled">
+                    <li><a href="/">Home</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 col-lg-3 col-xl-3">
+                <h5>Contact</h5>
+                <hr class="bg-white mb-2 mt-0 d-inline-block mx-auto w-25">
+                <ul class="list-unstyled">
+                    <li><i class="fa fa-envelope mr-2"></i> email@example.com</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
