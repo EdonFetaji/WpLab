@@ -36,6 +36,42 @@
 <header>
     <h1>Welcome to our Book Reservation App</h1>
 </header>
+
+<section style="padding-bottom: 200px;">
+
+    <form action="/books" method="post" style="display: flex; justify-content: space-around; ">
+
+        <label> Text: <input type="text" name="textContent"/></label>
+        <label> Rating: <input type="number" step="any" name="rating"/></label>
+        <button type="submit">
+            Search
+        </button>
+
+    </form>
+
+    <ul style="padding-bottom: 100px; padding-left:80px; padding-top: 20px;">
+        <th:block th:if="${searchResults != null && searchResults.size() > 0}">
+
+            <div th:each="bookRes: ${searchResults}">
+                <li th:text=" 'Title: ' + ${bookRes.title} + ', Genre: '
+                    +  ${bookRes.genre} + ', Rating: ' +  ${bookRes.averageRating}+' Author: '+${bookRes.getAuthor().getName()}+' '+ ${bookRes.getAuthor().getSurname()}">
+                </li>
+
+                <a th:href="@{'/books/book-form/'+${bookRes.id}}">
+                    Edit
+                </a>
+
+                <form method="post" th:action="@{'/books/delete/'+${bookRes.id}}">
+                    <button type="submit">
+                        Delete
+                    </button>
+                </form>
+            </div>
+
+        </th:block>
+    </ul>
+</section>
+<hr>
 <main>
     <div th:if="${error != null}" th:text="${error}" style="color: red; font-size: 42px;">
 
@@ -78,43 +114,7 @@
         <button type="submit"> Reserve BOOK</button>
 
     </form>
-    <br>
-    <hr>
-    <br>
-    <section style="padding-bottom: 200px;">
 
-        <form action="/books" method="post" style="display: flex; justify-content: space-around; ">
-
-            <label> Text: <input type="text" name="textContent"/></label>
-            <label> Rating: <input type="number" step="any" name="rating"/></label>
-            <button type="submit">
-                Search
-            </button>
-
-        </form>
-
-        <ul style="padding-bottom: 100px; padding-left:80px; padding-top: 20px;">
-            <th:block th:if="${searchResults != null && searchResults.size() > 0}">
-
-                <div th:each="bookRes: ${searchResults}">
-                <li th:text=" 'Title: ' + ${bookRes.title} + ', Genre: '
-                    +  ${bookRes.genre} + ', Rating: ' +  ${bookRes.averageRating}+' Author: '+${bookRes.getAuthor().getName()}+' '+ ${bookRes.getAuthor().getSurname()}">
-                </li>
-
-                <a th:href="@{'/books/book-form/'+${bookRes.id}}">
-                    Edit
-                </a>
-
-                <form method="post" th:action="@{'/books/delete/'+${bookRes.id}}">
-                    <button type="submit">
-                        Delete
-                    </button>
-                </form>
-                </div>
-
-            </th:block>
-        </ul>
-    </section>
 
 </main>
 </body>

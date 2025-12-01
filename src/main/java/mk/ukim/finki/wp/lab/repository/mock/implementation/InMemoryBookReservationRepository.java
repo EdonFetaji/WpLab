@@ -1,8 +1,8 @@
-package mk.ukim.finki.wp.lab.repository.implementation;
+package mk.ukim.finki.wp.lab.repository.mock.implementation;
 
 import mk.ukim.finki.wp.lab.bootstrap.DataHolder;
 import mk.ukim.finki.wp.lab.model.BookReservation;
-import mk.ukim.finki.wp.lab.repository.BookReservationRepository;
+import mk.ukim.finki.wp.lab.repository.mock.BookReservationRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -10,7 +10,7 @@ public class InMemoryBookReservationRepository implements BookReservationReposit
     private final DataHolder dataHolder;
 
     public InMemoryBookReservationRepository() {
-        this.dataHolder = new DataHolder();
+        this.dataHolder = new DataHolder(null,null);
     }
 
     @Override

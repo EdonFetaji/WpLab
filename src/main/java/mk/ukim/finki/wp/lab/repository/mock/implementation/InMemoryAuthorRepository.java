@@ -1,8 +1,8 @@
-package mk.ukim.finki.wp.lab.repository.implementation;
+package mk.ukim.finki.wp.lab.repository.mock.implementation;
 
 import mk.ukim.finki.wp.lab.bootstrap.DataHolder;
 import mk.ukim.finki.wp.lab.model.Author;
-import mk.ukim.finki.wp.lab.repository.AuthorRepository;
+import mk.ukim.finki.wp.lab.repository.mock.AuthorRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

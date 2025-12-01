@@ -1,23 +1,28 @@
 package mk.ukim.finki.wp.lab.model;
 
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.UUID;
 
+@Entity
 @Data
 @AllArgsConstructor
 public class Book {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     String title;
     String genre;
     double averageRating;
+    @ManyToOne
     private Author author;
 
-    public Book(String title, String genre, double averageRating,Author author) {
-        this.id = (long) (Math.random() * 1000);
+    public Book(String title, String genre, double averageRating, Author author) {
+//        this.id = (long) (Math.random() * 1000);
         this.title = title;
         this.genre = genre;
         this.averageRating = averageRating;
@@ -25,7 +30,7 @@ public class Book {
     }
 
     public Book() {
-        this.id = (long) (Math.random() * 1000);
+//        this.id = (long) (Math.random() * 1000);
         this.title = "No title";
         this.genre = "No genre";
         this.averageRating = 0.0;

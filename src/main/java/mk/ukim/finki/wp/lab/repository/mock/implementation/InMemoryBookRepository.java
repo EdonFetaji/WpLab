@@ -1,10 +1,10 @@
-package mk.ukim.finki.wp.lab.repository.implementation;
+package mk.ukim.finki.wp.lab.repository.mock.implementation;
 
 import mk.ukim.finki.wp.lab.bootstrap.DataHolder;
 import mk.ukim.finki.wp.lab.model.Author;
 import mk.ukim.finki.wp.lab.model.Book;
 import org.springframework.stereotype.Repository;
-import mk.ukim.finki.wp.lab.repository.BookRepository;
+import mk.ukim.finki.wp.lab.repository.mock.BookRepository;
 
 import java.util.List;
 
