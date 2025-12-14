@@ -1,121 +1,153 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
->
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Book Reservation - Welcome and choose a Book</title>
-    <style type="text/css">
-        body {
-            width: 800px;
-            margin: auto;
-            font-family: Arial, sans-serif;
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        form {
-            margin-top: 20px;
-        }
-
-        .book-option {
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .book-option:hover {
-            background-color: #f5f5f5;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-<body>
-<header>
-    <h1>Welcome to our Book Reservation App</h1>
-</header>
+<body class="bg-light">
 
-<section style="padding-bottom: 200px;">
+<div class="container my-5">
+    <div class="card shadow">
 
-    <form action="/books" method="post" style="display: flex; justify-content: space-around; ">
+        <!-- Header -->
+        <div class="card-header bg-primary text-white text-center py-3">
+            <h1 class="h3 mb-0">Book Reservation System</h1>
+        </div>
 
-        <label> Text: <input type="text" name="textContent"/></label>
-        <label> Rating: <input type="number" step="any" name="rating"/></label>
-        <button type="submit">
-            Search
-        </button>
+        <div class="card-body p-4">
 
-    </form>
-
-    <ul style="padding-bottom: 100px; padding-left:80px; padding-top: 20px;">
-        <th:block th:if="${searchResults != null && searchResults.size() > 0}">
-
-            <div th:each="bookRes: ${searchResults}">
-                <li th:text=" 'Title: ' + ${bookRes.title} + ', Genre: '
-                    +  ${bookRes.genre} + ', Rating: ' +  ${bookRes.averageRating}+' Author: '+${bookRes.getAuthor().getName()}+' '+ ${bookRes.getAuthor().getSurname()}">
-                </li>
-
-                <a th:href="@{'/books/book-form/'+${bookRes.id}}">
-                    Edit
-                </a>
-
-                <form method="post" th:action="@{'/books/delete/'+${bookRes.id}}">
-                    <button type="submit">
-                        Delete
-                    </button>
+            <!-- Authentication Info -->
+            <div class="d-flex justify-content-between align-items-center mb-4" sec:authorize="isAuthenticated()">
+                <span>Welcome, <strong sec:authentication="name"></strong></span>
+                <form th:action="@{/logout}" method="post" class="m-0">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
                 </form>
             </div>
 
-        </th:block>
-    </ul>
-</section>
-<hr>
-<main>
-    <div th:if="${error != null}" th:text="${error}" style="color: red; font-size: 42px;">
+            <div class="text-end mb-4" sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}" class="btn btn-outline-primary">Login</a>
+            </div>
 
-    </div>
-    <a th:href="@{'/books/book-form'}">
-        Add a New Book
-    </a>
-
-    <form th:action="@{'/bookReservations/add'}" method="POST">
-        <h2>Choose a book:</h2>
-
-        <th:block>
-            <label>
-                <div th:each="book : ${bookList}">
-                    <input type="radio" name="bookTitle" class="book-option"
-                           th:value="${book.title}"
-                           th:text=" 'Title: ' + ${book.title} + ', Genre: ' +  ${book.genre} + ', Rating: ' +  ${book.averageRating}+' Author: '+${book.getAuthor().getName()}+' '+ ${book.getAuthor().getSurname()} "/>
-                    <br>
-
+            <!-- Search Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Search Books</h5>
                 </div>
-            </label>
+                <div class="card-body">
+                    <form action="/books" method="post">
+                        <div class="row g-3">
+                            <div class="col-md-5">
+                                <label class="form-label">Search Text</label>
+                                <input type="text" name="textContent" class="form-control" placeholder="Enter title, genre, or author..."/>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Minimum Rating</label>
+                                <input type="number" step="any" name="rating" class="form-control" placeholder="e.g., 4.5"/>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label d-block">&nbsp;</label>
+                                <button type="submit" class="btn btn-primary w-100">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-        </th:block>
+            <!-- Search Results -->
+            <div th:if="${searchResults != null && searchResults.size() > 0}" class="mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Search Results</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <div th:each="bookRes: ${searchResults}" class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1" th:text="${bookRes.title}"></h6>
+                                        <p class="mb-1 text-muted small">
+                                            <span th:text="${bookRes.genre}"></span> |
+                                            Rating: <span th:text="${bookRes.averageRating}"></span> |
+                                            Author: <span th:text="${bookRes.getAuthor().getName()} + ' ' + ${bookRes.getAuthor().getSurname()}"></span>
+                                        </p>
+                                    </div>
+                                    <div class="btn-group" sec:authorize="hasRole('ADMIN')">
+                                        <a th:href="@{'/books/book-form/'+${bookRes.id}}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                        <form method="post" th:action="@{'/books/delete/'+${bookRes.id}}" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div th:if="${error != null}" class="alert alert-danger" role="alert">
+                <span th:text="${error}"></span>
+            </div>
 
-        <!-- Display radio buttons for each book,
-             the value should be the book title
-             and the displayed text should be:
-             Title: <book_title>, Genre: <book_genre>, Rating: <average_rating> -->
+            <div class="text-end mb-3" sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{'/books/book-form'}" class="btn btn-success">Add New Book</a>
+            </div>
 
-        <h2>Enter your information:</h2>
-        <label>Your Name:</label>
-        <input type="text" name="readerName" required><br/>
-        <label>Your Address:</label>
-        <input type="text" name="readerAddress" required><br/>
+            <hr class="my-4">
 
-        <h2>Choose number of copies:</h2>
-        <input type="number" name="numberOfCopies" min="1" max="10" required><br/>
-        <br/>
-        <button type="submit"> Reserve BOOK</button>
+            <form th:action="@{'/bookReservations/add'}" method="POST">
 
-    </form>
+                <div class="mb-4">
+                    <h5 class="mb-3">Choose a Book</h5>
+                    <div th:each="book : ${bookList}" class="mb-2">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="bookTitle"
+                                           th:value="${book.title}"
+                                           th:id="'book-' + ${book.id}">
+                                    <label class="form-check-label" th:for="'book-' + ${book.id}">
+                                        <strong th:text="${book.title}"></strong> -
+                                        <span th:text="${book.genre}"></span> |
+                                        Rating: <span th:text="${book.averageRating}"></span> |
+                                        Author: <span th:text="${book.getAuthor().getName()} + ' ' + ${book.getAuthor().getSurname()}"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Reader Information -->
+                <div class="mb-4">
+                    <h5 class="mb-3">Your Information</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" name="readerName" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Address</label>
+                            <input type="text" name="readerAddress" class="form-control" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Number of Copies</label>
+                            <input type="number" name="numberOfCopies" class="form-control" min="1" max="10" value="1" required>
+                        </div>
+                    </div>
+                </div>
 
-</main>
+                <button type="submit" class="btn btn-primary btn-lg w-100">Reserve Book</button>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
